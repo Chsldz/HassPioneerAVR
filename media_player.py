@@ -258,8 +258,8 @@ class PioneerDevice(MediaPlayerDevice):
         self._muted = False
         self._power = False
         self._zone2power = False
-        self._source_name_to_number = {}
-        self._source_number_to_name = {}
+        self._source_name_to_number = {"tuner":"02","favorites":"45","internet":"38","tv":"05","hdmi3":"21"}
+        self._source_number_to_name = {"02":"tuner","45":"favorites","38":"internet","05":"tv","21":"hdmi3"}
         self._disabled_source_list = {}
         self._current_radio_station = ""
         self._current_radio_frequency = ""
