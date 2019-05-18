@@ -83,7 +83,7 @@ DEFAULT_SOURCES = [SOURCE_ID_BD, SOURCE_ID_DVD, SOURCE_ID_SAT,
 
 _LOGGER = logging.getLogger(__name__)
 
-MAX_VOLUME = 185
+MAX_VOLUME = 60
 DEFAULT_NAME = 'Pioneer AVR'
 DEFAULT_PORT = 8102   # Most Pioneer AVRs now use 8102
 
@@ -559,6 +559,7 @@ class PioneerDevice(MediaPlayerDevice):
         # Volume level
         elif data[:3] == "VOL":
             self._volume = int(data[3:6]) / MAX_VOLUME
+            #self._volume = int(data[3:6])
             _LOGGER.debug("Volume: " + str(round(self._volume*100))+"%")
 
         # Current speaker
@@ -800,9 +801,20 @@ class PioneerDevice(MediaPlayerDevice):
     def set_volume_level(self, volume):
         """Set volume level, range 0..1."""
         # 60dB max
+        tempvol = volume / MAX_VOLUME
         _LOGGER.debug("Set volume to "+str(volume) \
-            +", so to "+str(round(volume * MAX_VOLUME)).zfill(3)+"VL")
-        self.telnet_command(str(round(volume * MAX_VOLUME)).zfill(3) + "VL")
+            +", so to "+str(tempvol).zfill(3)+"VL")
+        if(tempvol <60):
+            if self._volume > tempvol:
+                for x in range(self.volume_level, tempvol, -1):
+                    self.volume_down()
+            else:
+                for x in range(self.volume_level, tempvol, 1):
+                    temp = 10
+                    #self.volume_up() # send "VU" command (volume up)
+        #self.telnet_command(str(round(volume * MAX_VOLUME)).zfill(3) + "VL")
+        else:
+            _LOGGER.debug("out of Range")
 
     def mute_volume(self, mute):
         """Mute (true) or unmute (false) media player."""
