@@ -258,8 +258,8 @@ class PioneerDevice(MediaPlayerDevice):
         self._muted = False
         self._power = False
         self._zone2power = False
-        self._source_name_to_number = {"tuner":"02","favorites":"45","internet":"38","tv":"05","hdmi3":"21"}
-        self._source_number_to_name = {"02":"tuner","45":"favorites","38":"internet","05":"tv","21":"hdmi3"}
+        self._source_name_to_number = {"Tuner":"02","Favorites":"45","Internet":"38","TV":"05","HDMI3":"22"}
+        self._source_number_to_name = {"02":"Tuner","45":"Favorites","38":"Internet","05":"TV","22":"HDMI3"}
         self._disabled_source_list = {}
         self._current_radio_station = ""
         self._current_radio_frequency = ""
@@ -464,10 +464,10 @@ class PioneerDevice(MediaPlayerDevice):
 
         # Power state
         elif data[:3] == "PWR":
-            if data[3] == "1":
-                self._power = False
-            else:
+            if data[3] == "0":
                 self._power = True
+            else:
+                self._power = False
 
         # Zone power state
         elif data[:3] == "APR":
@@ -523,6 +523,35 @@ class PioneerDevice(MediaPlayerDevice):
             elif type == "26":    # Format ("mp3")
                 self._format = data[9:-3]
                 _LOGGER.debug("Format: " + self._format)
+            elif type == "29":    # Bitrate ("128kbps")
+                self._bitrate = data[9:-3]
+                _LOGGER.debug("Bitrate: " + self._bitrate)
+
+
+        # Metadata Internet Radio
+        elif data[:3] == "GEP":
+            type = data[6:8]
+            if type == "00":      # No data yet
+                pass
+            elif type == "32":      # Info
+                self._title = data[9:-3]
+                self.newDisplay = True
+                _LOGGER.debug("Title: " + self._title)
+            elif type == "20":    # RadioStation
+                self._artist = data[9:-3]
+                _LOGGER.debug("Artist: " + self._artist)
+            #elif type == "22":  # Album
+            #    self._album = data[9:-3]
+            #    _LOGGER.debug("Album: " + self._album)
+            #elif type == "23":  # Time ("7:12")
+            #    self._time = data[9:-3]
+            #    _LOGGER.debug("Time: " + self._time)
+            #elif type == "24":    # Genre ("Ambient")
+            #    self._genre = data[9:-3]
+            #    _LOGGER.debug("Genre: " + self._genre)
+            #elif type == "26":    # Format ("mp3")
+            #    self._format = data[9:-3]
+            #    _LOGGER.debug("Format: " + self._format)
             elif type == "29":    # Bitrate ("128kbps")
                 self._bitrate = data[9:-3]
                 _LOGGER.debug("Bitrate: " + self._bitrate)
@@ -590,7 +619,6 @@ class PioneerDevice(MediaPlayerDevice):
     def name(self):
         """Return the name of the device."""
         return self._name
-
     @property
     def state(self):
         """Return the state of the device."""
