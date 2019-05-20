@@ -801,20 +801,19 @@ class PioneerDevice(MediaPlayerDevice):
     def set_volume_level(self, volume):
         """Set volume level, range 0..1."""
         # 60dB max
-        tempvol = volume / MAX_VOLUME
+        intvol = round(volume* MAX_VOLUME)
+        aktintvol = round(self.volume_level * MAX_VOLUME)
         _LOGGER.debug("Set volume to "+str(volume) \
-            +", so to "+str(tempvol).zfill(3)+"VL")
-        if(tempvol <60):
-            if self._volume > tempvol:
-                for x in range(self.volume_level, tempvol, -1):
-                    self.volume_down()
-            else:
-                for x in range(self.volume_level, tempvol, 1):
-                    temp = 10
-                    #self.volume_up() # send "VU" command (volume up)
-        #self.telnet_command(str(round(volume * MAX_VOLUME)).zfill(3) + "VL")
+            +", so to "+str(intvol).zfill(3)+"VL")
+        if aktintvol > intvol:
+            for x in range(aktintvol, intvol, -2):
+                self.volume_down()
         else:
-            _LOGGER.debug("out of Range")
+            for x in range(aktintvol, intvol, 2):
+                self.volume_up()
+                #self.volume_up() # send "VU" command (volume up)
+        #self.telnet_command(str(round(volume * MAX_VOLUME)).zfill(3) + "VL")
+        _LOGGER.debug("out of Range")
 
     def mute_volume(self, mute):
         """Mute (true) or unmute (false) media player."""
