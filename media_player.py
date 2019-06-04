@@ -258,8 +258,8 @@ class PioneerDevice(MediaPlayerDevice):
         self._muted = False
         self._power = False
         self._zone2power = False
-        self._source_name_to_number = {"Tuner":"02","Favorites":"45","Internet":"38","TV":"05","HDMI3":"22"}
-        self._source_number_to_name = {"02":"Tuner","45":"Favorites","38":"Internet","05":"TV","22":"HDMI3"}
+        self._source_name_to_number = {"Tuner":"02","Favorites":"45","Internet":"38","TV":"05","GAME":"49","DVD":"04"}
+        self._source_number_to_name = {"02":"Tuner","45":"Favorites","38":"Internet","05":"TV","49":"GAME","04":"DVD"}
         self._disabled_source_list = {}
         self._current_radio_station = ""
         self._current_radio_frequency = ""
@@ -705,7 +705,7 @@ class PioneerDevice(MediaPlayerDevice):
         elif self._selected_source_id == SOURCE_ID_MEDIA_SERVER \
           or self._selected_source_id == SOURCE_ID_INTERNET \
           or self._selected_source_id == SOURCE_ID_FAVORITES:
-            command = "10NW"
+            command = "30PB"
 
         if command>"":
             self.telnet_command(command)
@@ -748,7 +748,7 @@ class PioneerDevice(MediaPlayerDevice):
         elif self._selected_source_id == SOURCE_ID_MEDIA_SERVER \
           or self._selected_source_id == SOURCE_ID_INTERNET \
           or self._selected_source_id == SOURCE_ID_FAVORITES:
-            command = "12NW"
+            command = "12PB"
 
         if command>"":
             self.telnet_command(command)
@@ -773,7 +773,7 @@ class PioneerDevice(MediaPlayerDevice):
         elif self._selected_source_id == SOURCE_ID_MEDIA_SERVER \
           or self._selected_source_id == SOURCE_ID_INTERNET \
           or self._selected_source_id == SOURCE_ID_FAVORITES:
-            command = "13NW"
+            command = "13PB"
 
         if command>"":
             self.telnet_command(command)
